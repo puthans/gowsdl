@@ -30,10 +30,12 @@ type SOAPEnvelopeResponse struct {
 }
 
 type SOAPEnvelope struct {
-	XMLName xml.Name      `xml:"soap:Envelope"`
-	XmlNS   string        `xml:"xmlns:soap,attr"`
-	Headers []interface{} `xml:"soap:Header"`
-	Body    SOAPBody
+	XMLName  xml.Name      `xml:"soap:Envelope"`
+	XmlNS    string        `xml:"xmlns:soap,attr"`
+	XmlNSWeb string        `xml:"xmlns:web,attr"`
+	XmlNSDTO string        `xml:"xmlns:dto,attr"`
+	Headers  []interface{} `xml:"soap:Header"`
+	Body     SOAPBody
 }
 
 type SOAPHeaderResponse struct {
@@ -187,6 +189,8 @@ const (
 	WssNsType       string = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"
 	mtomContentType string = `multipart/related; start-info="application/soap+xml"; type="application/xop+xml"; boundary="%s"`
 	XmlNsSoapEnv    string = "http://schemas.xmlsoap.org/soap/envelope/"
+	XmlNsWebEnv     string = "http://web.ws.hss.onevox.com"
+	XmlNsDTOEnv     string = "http://dto.ws.hss.onevox.com"
 )
 
 type WSSSecurityHeader struct {
@@ -421,7 +425,9 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 	retAttachments *[]MIMEMultipartAttachment) error {
 	// SOAP envelope capable of namespace prefixes
 	envelope := SOAPEnvelope{
-		XmlNS: XmlNsSoapEnv,
+		XmlNS:    XmlNsSoapEnv,
+		XmlNSWeb: XmlNsWebEnv,
+		XmlNSDTO: XmlNsDTOEnv,
 	}
 
 	envelope.Headers = s.headers
