@@ -532,6 +532,8 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 	// we need to store the body in case of an error
 	// to return the right HTTPError/ResponseBody
 	body := res.Body
+	x, _ := io.ReadAll(res.Body)
+	fmt.Println(string(x))
 	var cachedErrorBody []byte
 	if res.StatusCode == 500 {
 		cachedErrorBody, err = io.ReadAll(res.Body)
