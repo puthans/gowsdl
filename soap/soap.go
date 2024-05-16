@@ -24,6 +24,8 @@ type SOAPDecoder interface {
 
 type SOAPEnvelopeResponse struct {
 	XMLName     xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
+	XmlXsd      string   `xml:"xmlns:xsd,attr"`
+	XmlXsi      string   `xml:"xmlns:xsi,attr"`
 	Header      *SOAPHeaderResponse
 	Body        SOAPBodyResponse
 	Attachments []MIMEMultipartAttachment `xml:"attachments,omitempty"`
@@ -191,6 +193,8 @@ const (
 	XmlNsSoapEnv    string = "http://schemas.xmlsoap.org/soap/envelope/"
 	XmlNsWebEnv     string = "http://web.ws.hss.onevox.com"
 	XmlNsDTOEnv     string = "http://dto.ws.hss.onevox.com"
+	XmlNsXsd        string = "http://www.w3.org/2001/XMLSchema"
+	XmlNsXsi        string = "http://www.w3.org/2001/XMLSchema-instance"
 )
 
 type WSSSecurityHeader struct {
