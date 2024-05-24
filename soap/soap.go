@@ -40,6 +40,7 @@ type SOAPEnvelope struct {
 	XmlNSHss string        `xml:"xmlns:hss,attr"`
 	XmlNSApi string        `xml:"xmlns:api,attr"`
 	XmlNSIms string        `xml:"xmlns:ims,attr"`
+	XmlNSHlr string        `xml:"xmlns:hlr,attr"`
 	Headers  []interface{} `xml:"soap:Header"`
 	Body     SOAPBody
 }
@@ -203,6 +204,7 @@ const (
 	XmlNsHssEnv     string = "http://hss.dto.ws.hss.onevox.com"
 	XmlNsAPIEnv     string = "http://api.ws.hss.onevox.com"
 	XmlNsImsEnv     string = "http://imsisim.bulk.servlet.hss.onevox.com"
+	XmlNsHlrEnv     string = "http://hlr.subscription.servlet.hss.onevox.com"
 )
 
 type WSSSecurityHeader struct {
@@ -444,6 +446,7 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 		XmlNSHss: XmlNsHssEnv,
 		XmlNSApi: XmlNsAPIEnv,
 		XmlNSIms: XmlNsImsEnv,
+		XmlNSHlr: XmlNsHlrEnv,
 	}
 
 	envelope.Headers = s.headers
