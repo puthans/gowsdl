@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -33,17 +32,18 @@ type SOAPEnvelopeResponse struct {
 }
 
 type SOAPEnvelope struct {
-	XMLName  xml.Name      `xml:"soap:Envelope"`
-	XmlNS    string        `xml:"xmlns:soap,attr"`
-	XmlNSWeb string        `xml:"xmlns:web,attr"`
-	XmlNSDTO string        `xml:"xmlns:dto,attr"`
-	XmlNSCom string        `xml:"xmlns:com,attr"`
-	XmlNSHss string        `xml:"xmlns:hss,attr"`
-	XmlNSApi string        `xml:"xmlns:api,attr"`
-	XmlNSIms string        `xml:"xmlns:ims,attr"`
-	XmlNSHlr string        `xml:"xmlns:hlr,attr"`
-	Headers  []interface{} `xml:"soap:Header"`
-	Body     SOAPBody
+	XMLName   xml.Name      `xml:"soap:Envelope"`
+	XmlNS     string        `xml:"xmlns:soap,attr"`
+	XmlNSWeb  string        `xml:"xmlns:web,attr"`
+	XmlNSDTO  string        `xml:"xmlns:dto,attr"`
+	XmlNSCom  string        `xml:"xmlns:com,attr"`
+	XmlNSHss  string        `xml:"xmlns:hss,attr"`
+	XmlNSApi  string        `xml:"xmlns:api,attr"`
+	XmlNSIms  string        `xml:"xmlns:ims,attr"`
+	XmlNSIms2 string        `xml:"xmlns:ims,attr"`
+	XmlNSHlr  string        `xml:"xmlns:hlr,attr"`
+	Headers   []interface{} `xml:"soap:Header"`
+	Body      SOAPBody
 }
 
 type SOAPHeaderResponse struct {
@@ -441,18 +441,15 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 	retAttachments *[]MIMEMultipartAttachment) error {
 	// SOAP envelope capable of namespace prefixes
 	envelope := SOAPEnvelope{
-		XmlNS:    XmlNsSoapEnv,
-		XmlNSWeb: XmlNsWebEnv,
-		XmlNSDTO: XmlNsDTOEnv,
-		XmlNSCom: XmlNsComEnv,
-		XmlNSHss: XmlNsHssEnv,
-		XmlNSApi: XmlNsAPIEnv,
-		XmlNSIms: XmlNsImsEnv,
-		XmlNSHlr: XmlNsHlrEnv,
-	}
-
-	if strings.EqualFold(soapAction, "imsiRange") {
-		envelope.XmlNSIms = XmlNsImsEnv2
+		XmlNS:     XmlNsSoapEnv,
+		XmlNSWeb:  XmlNsWebEnv,
+		XmlNSDTO:  XmlNsDTOEnv,
+		XmlNSCom:  XmlNsComEnv,
+		XmlNSHss:  XmlNsHssEnv,
+		XmlNSApi:  XmlNsAPIEnv,
+		XmlNSIms:  XmlNsImsEnv,
+		XmlNSIms2: XmlNsImsEnv2,
+		XmlNSHlr:  XmlNsHlrEnv,
 	}
 
 	envelope.Headers = s.headers
@@ -495,7 +492,7 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 	} else {
 		req.Header.Add("Content-Type", "text/xml; charset=\"utf-8\"")
 	}
-	req.Header.Add("SOAPAction", "''")
+	req.Header.Add("SOAPAction", soapAction)
 	req.Header.Set("User-Agent", "gowsdl/0.1")
 	if s.opts.httpHeaders != nil {
 		for k, v := range s.opts.httpHeaders {
