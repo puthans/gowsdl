@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -204,6 +205,7 @@ const (
 	XmlNsHssEnv     string = "http://hss.dto.ws.hss.onevox.com"
 	XmlNsAPIEnv     string = "http://api.ws.hss.onevox.com"
 	XmlNsImsEnv     string = "http://imsisim.bulk.servlet.hss.onevox.com"
+	XmlNsImsEnv2    string = "http://imsirange.v2.rest.dto.ws.hss.onevox.com"
 	XmlNsHlrEnv     string = "http://hlr.subscription.servlet.hss.onevox.com"
 )
 
@@ -449,6 +451,10 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 		XmlNSHlr: XmlNsHlrEnv,
 	}
 
+	if strings.EqualFold(soapAction, "imsiRange") {
+		envelope.XmlNSIms = XmlNsImsEnv2
+	}
+
 	envelope.Headers = s.headers
 
 	envelope.Body.Content = request
@@ -489,7 +495,7 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 	} else {
 		req.Header.Add("Content-Type", "text/xml; charset=\"utf-8\"")
 	}
-	req.Header.Add("SOAPAction", soapAction)
+	req.Header.Add("SOAPAction", "''")
 	req.Header.Set("User-Agent", "gowsdl/0.1")
 	if s.opts.httpHeaders != nil {
 		for k, v := range s.opts.httpHeaders {
