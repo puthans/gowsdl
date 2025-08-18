@@ -1,4 +1,4 @@
-module github.com/stormvirux/gowsdl
+module github.com/puthans/gowsdl
 
 go 1.22
 
