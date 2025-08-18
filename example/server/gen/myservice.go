@@ -5,8 +5,9 @@ package gen
 import (
 	"context"
 	"encoding/xml"
-	"github.com/stormvirux/gowsdl/soap"
 	"time"
+
+	"github.com/puthans/gowsdl/soap"
 )
 
 // against "unused imports"

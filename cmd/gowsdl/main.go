@@ -55,7 +55,7 @@ import (
 	"os"
 	"path/filepath"
 
-	gen "github.com/stormvirux/gowsdl"
+	gen "github.com/puthans/gowsdl"
 )
 
 // Version is initialized in compilation time by go build.
