@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -24,6 +25,8 @@ type SOAPDecoder interface {
 
 type SOAPEnvelopeResponse struct {
 	XMLName     xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
+	XmlXsd      string   `xml:"xmlns:xsd,attr"`
+	XmlXsi      string   `xml:"xmlns:xsi,attr"`
 	Header      *SOAPHeaderResponse
 	Body        SOAPBodyResponse
 	Attachments []MIMEMultipartAttachment `xml:"attachments,omitempty"`
@@ -34,6 +37,11 @@ type SOAPEnvelope struct {
 	XmlNS    string        `xml:"xmlns:soap,attr"`
 	XmlNSWeb string        `xml:"xmlns:web,attr"`
 	XmlNSDTO string        `xml:"xmlns:dto,attr"`
+	XmlNSCom string        `xml:"xmlns:com,attr"`
+	XmlNSHss string        `xml:"xmlns:hss,attr"`
+	XmlNSApi string        `xml:"xmlns:api,attr"`
+	XmlNSIms string        `xml:"xmlns:ims,attr"`
+	XmlNSHlr string        `xml:"xmlns:hlr,attr"`
 	Headers  []interface{} `xml:"soap:Header"`
 	Body     SOAPBody
 }
@@ -191,6 +199,14 @@ const (
 	XmlNsSoapEnv    string = "http://schemas.xmlsoap.org/soap/envelope/"
 	XmlNsWebEnv     string = "http://web.ws.hss.onevox.com"
 	XmlNsDTOEnv     string = "http://dto.ws.hss.onevox.com"
+	XmlNsXsd        string = "http://www.w3.org/2001/XMLSchema"
+	XmlNsXsi        string = "http://www.w3.org/2001/XMLSchema-instance"
+	XmlNsComEnv     string = "http://common.dto.ws.hss.onevox.com"
+	XmlNsHssEnv     string = "http://hss.dto.ws.hss.onevox.com"
+	XmlNsAPIEnv     string = "http://api.ws.hss.onevox.com"
+	XmlNsImsEnv     string = "http://imsisim.bulk.servlet.hss.onevox.com"
+	XmlNsImsEnv2    string = "http://imsirange.v2.rest.dto.ws.hss.onevox.com"
+	XmlNsHlrEnv     string = "http://hlr.subscription.servlet.hss.onevox.com"
 )
 
 type WSSSecurityHeader struct {
@@ -428,6 +444,15 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 		XmlNS:    XmlNsSoapEnv,
 		XmlNSWeb: XmlNsWebEnv,
 		XmlNSDTO: XmlNsDTOEnv,
+		XmlNSCom: XmlNsComEnv,
+		XmlNSHss: XmlNsHssEnv,
+		XmlNSApi: XmlNsAPIEnv,
+		XmlNSIms: XmlNsImsEnv,
+		XmlNSHlr: XmlNsHlrEnv,
+	}
+
+	if strings.Contains(soapAction, "imsiRange") {
+		envelope.XmlNSIms = XmlNsImsEnv2
 	}
 
 	envelope.Headers = s.headers
@@ -470,14 +495,14 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 	} else {
 		req.Header.Add("Content-Type", "text/xml; charset=\"utf-8\"")
 	}
-	req.Header.Add("SOAPAction", soapAction)
+	req.Header.Add("SOAPAction", "''")
 	req.Header.Set("User-Agent", "gowsdl/0.1")
 	if s.opts.httpHeaders != nil {
 		for k, v := range s.opts.httpHeaders {
 			req.Header.Set(k, v)
 		}
 	}
-	req.Close = true
+	// req.Close = true
 
 	client := s.opts.client
 	if client == nil {

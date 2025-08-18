@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"time"
 
-	"github.com/stormvirux/gowsdl/soap"
+	"github.com/puthans/gowsdl/soap"
 )
 
 // against "unused imports"
